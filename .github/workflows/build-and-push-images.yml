@@ -46,3 +46,14 @@ jobs:
             *.REPOSITORY=${{ env.REPOSITORY }}
             *.IMAGE_TAGS=${{ github.sha }},latest
             *.PLATFORMS=linux/amd64
+
+      - name: Save DigitalOcean kubeconfig
+        run: doctl kubernetes cluster kubeconfig save ${{ secrets.CLUSTER_NAME }}
+
+      - name: Update deployment image
+        run: |
+          kubectl set image statefulset/${{ matrix.deployment }} ${{ matrix.component }}=${REGISTRY}/${{ matrix.component }}:${GITHUB_SHA}
+
+      - name: Verify deployment
+        run: |
+          kubectl rollout status statefulset/${{ matrix.deployment }}
