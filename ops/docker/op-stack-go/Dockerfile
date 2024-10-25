@@ -125,6 +125,8 @@ CMD ["op-wheel"]
 
 FROM --platform=$TARGETPLATFORM $TARGET_BASE_IMAGE AS op-node-target
 COPY --from=op-node-builder /app/op-node/bin/op-node /usr/local/bin/
+# also copy rollup.json into the image
+COPY ./rollup.json /rollup.json
 CMD ["op-node"]
 
 FROM --platform=$TARGETPLATFORM $TARGET_BASE_IMAGE AS op-challenger-target
